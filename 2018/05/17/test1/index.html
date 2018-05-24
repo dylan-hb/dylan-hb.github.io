@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="roc 、auc," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、基本定义1、混淆矩阵混淆矩阵可以对预测值与真实值做可视化展示。混淆矩阵用n行n列的矩阵表示，矩阵的列表示的是模型的预测情况，矩阵的行表示的样本的真实情况。如下图所示：  TP: True  Positive （真正），预测为正，实际为正（预测对了）。FP: False Positive （假正），预测为正，实际为负（预测错了）。FN: False Negative （假负），预测为负，实际为正">
+<meta name="keywords" content="roc 、auc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分类模型评估中的名词解释">
+<meta property="og:url" content="http://yoursite.com/2018/05/17/test1/index.html">
+<meta property="og:site_name" content="Dylan&#39;s Notes">
+<meta property="og:description" content="一、基本定义1、混淆矩阵混淆矩阵可以对预测值与真实值做可视化展示。混淆矩阵用n行n列的矩阵表示，矩阵的列表示的是模型的预测情况，矩阵的行表示的样本的真实情况。如下图所示：  TP: True  Positive （真正），预测为正，实际为正（预测对了）。FP: False Positive （假正），预测为正，实际为负（预测错了）。FN: False Negative （假负），预测为负，实际为正">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/屏幕快照%202018-05-17%2021.27.28.png">
+<meta property="og:image" content="http://yoursite.com/images/roc.png">
+<meta property="og:image" content="http://yoursite.com/images/roc_table.png">
+<meta property="og:image" content="http://yoursite.com/images/rco_curve.png">
+<meta property="og:updated_time" content="2018-05-24T07:45:27.203Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分类模型评估中的名词解释">
+<meta name="twitter:description" content="一、基本定义1、混淆矩阵混淆矩阵可以对预测值与真实值做可视化展示。混淆矩阵用n行n列的矩阵表示，矩阵的列表示的是模型的预测情况，矩阵的行表示的样本的真实情况。如下图所示：  TP: True  Positive （真正），预测为正，实际为正（预测对了）。FP: False Positive （假正），预测为正，实际为负（预测错了）。FN: False Negative （假负），预测为负，实际为正">
+<meta name="twitter:image" content="http://yoursite.com/images/屏幕快照%202018-05-17%2021.27.28.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/17/test1/"/>
+
+
+
+
+
+  <title>分类模型评估中的名词解释 | Dylan's Notes</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Dylan's Notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Machine-Learning</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/17/test1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="dylan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dylan's Notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分类模型评估中的名词解释</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-17T09:38:04+08:00">
+                2018-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/分类性能度量指标/" itemprop="url" rel="index">
+                    <span itemprop="name">分类性能度量指标</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、基本定义"><a href="#一、基本定义" class="headerlink" title="一、基本定义"></a>一、基本定义</h2><h4 id="1、混淆矩阵"><a href="#1、混淆矩阵" class="headerlink" title="1、混淆矩阵"></a>1、混淆矩阵</h4><p>混淆矩阵可以对预测值与真实值做可视化展示。混淆矩阵用n行n列的矩阵表示，矩阵的列表<br>示的是模型的预测情况，矩阵的行表示的样本的真实情况。如下图所示：</p>
+<p><img src="/images/屏幕快照 2018-05-17 21.27.28.png" alt=""></p>
+<p><strong>TP</strong>: True  Positive （真正），预测为正，实际为正（预测对了）。<br><strong>FP</strong>: False Positive （假正），预测为正，实际为负（预测错了）。<br><strong>FN:</strong> False Negative （假负），预测为负，实际为正（预测错了）。<br><strong>TN</strong>: True  Negative （真负），预测为负，实际为负（预测对了）。  </p>
+<h4 id="2、准确率-Accuracy"><a href="#2、准确率-Accuracy" class="headerlink" title="2、准确率(Accuracy)"></a>2、准确率(Accuracy)</h4><p>   准确率表示的是被预测对的数据（TP+TN）占所有数据(TP+FP+TN+FN)的比例。Accuracy=（TP+TN）/(TP+FP+TN+FN)。反应的是分类器对整个样本的判定能力。</p>
+<h4 id="3、精确率-Precision"><a href="#3、精确率-Precision" class="headerlink" title="3、精确率(Precision)"></a>3、精确率(Precision)</h4><p>   精确率表示的是被预测为正（TP+FP）的数据中，真正为正（TP）的数据比例。<br>   Precision=TP/(TP+FP)。精准率反应的是对预测数据的真确率。</p>
+<h4 id="4、召回率-Recall"><a href="#4、召回率-Recall" class="headerlink" title="4、召回率(Recall)"></a>4、召回率(Recall)</h4><p>召回率表示的是预测为正，且真为正的数据（TP），占所有为正的数据的比例（TP+FN）Recall=TP/(TP+FN)</p>
+<h4 id="5、F1值（F1）"><a href="#5、F1值（F1）" class="headerlink" title="5、F1值（F1）"></a>5、F1值（F1）</h4><p>为了提升召回率，就需要尽量更多的预测数据为正，带来的后果就是精准率的下降（预测的越多，理论上错的概率越大）。F<br>-Score是为了兼顾分类模型的精准率、召回率，可以看作是模型精准率和召回率的一种加权调和<br>平均。<br><code>F-Score= F-Score = (a2+1) * Precision * Recall / a2  *(Precision +Recall)</code> 当a<br>=1时，F-Score 即为 $$ F1 = 2 *（Precision * Recall）/ (Precision    +Recall<br>) $$，最大值是1，最小值是0。</p>
+<h4 id="6、TPR"><a href="#6、TPR" class="headerlink" title="6、TPR"></a>6、TPR</h4><p>TPR表示的是真正例率，即：预测为正例，且真正为正例的数据（TP），占所有正例的比例。TPR = TP/(TP+FN) (同召回率)</p>
+<h3 id="7、FPR"><a href="#7、FPR" class="headerlink" title="7、FPR"></a>7、FPR</h3><p>FPR表示的是假正例率，预测为正，但是实际是负的数据（假正）占所有负样本（TN+FP）的比例。FPR = FP/(TN+FP)</p>
+<h3 id="8、ROC曲线"><a href="#8、ROC曲线" class="headerlink" title="8、ROC曲线"></a>8、ROC曲线</h3><p>ROC是以TPR为Y轴，FPR为X轴，从坐标（0，0）到坐标（1，1）的曲线<br>(也可能不是从0，0坐标开始) 如下图1所示：<br><img src="/images/roc.png" width="300px" heigth="300px"><br>上图解释：<br>对于一个分类器，预测某一个记录为正的概率为p，把概率p从高到低排序后。依次取概率作为阈值，把预测样本中概率值大于等于阈值的数据认为是正样本，小于阈值的数据认为是负样本。这样就能得到一系列的TPR，FPR坐标点。多组TPR、FPR坐标点组成了上述ROC曲线。<br>举例：<br>下表中总共20条样本记录，其中正样本P为10个，负样本N为10个。<br>当阈值为0.9的时候，第一条记录为预测为正样本，此时第1条记录实际上是真正样本，所以TP=1，TRP = TP/P = 1/10 =0.1。FP = 0，FPR = FP/N = 0/10 = 0。所以当阈值为0.9的时候，得到坐标点（0,0.1）</p>
+<p>当阈值为0.6的时候，第1、2、3、4样本被预测为正样本，此时1、3、4也是真正样本，第3条记录是负样本，所以TP=3，TRP = TP/P =3/10 = 0.3。FP = 1，FPR = FP/N= 1/10 = 0.1。所以当阈值为0.6的时候，得到坐标点（0.1,0.3）<br><img src="/images/roc_table.png" alt="">  </p>
+<p>最终把20组的FPR、TPR坐标点绘制到x、y的平面图上得到ROC曲线图。如下图2所示。<br><img src="/images/rco_curve.png" alt=""></p>
+<p>上文提到，ROC的曲线也可能不是从0，0坐标开始的，如上图就是从（0，0.1开始的）。只有当阈值=1的时候，此时所有预测数据都为负，没有正例，也就不存在正正例率，假正利率，所以此时TPR=0，RPR=0<br>由于真正率越高，分类效果越好，所以一个好的分类器的ROC曲线应该是从（0,0）出发，到（0，1）再到（1，1）的曲线。也就是曲线离Y轴越近越好。<br>疑问： 当获得一组预测概率后，用什么概率作为阈值判断是正例的依据，使得分类器能获得最好的效果。<br>图1中对角虚线作为ROC曲线的对比曲线（对角虚线可以视为随机猜测结果的ROC曲线图），</p>
+<h3 id="9、AUC"><a href="#9、AUC" class="headerlink" title="9、AUC"></a>9、AUC</h3><p>AUC是ROC曲线下的面积</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/roc-、auc/" rel="tag"># roc 、auc</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="dylan" />
+            
+              <p class="site-author-name" itemprop="name">dylan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、基本定义"><span class="nav-number">1.</span> <span class="nav-text">一、基本定义</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、混淆矩阵"><span class="nav-number">1.0.1.</span> <span class="nav-text">1、混淆矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、准确率-Accuracy"><span class="nav-number">1.0.2.</span> <span class="nav-text">2、准确率(Accuracy)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、精确率-Precision"><span class="nav-number">1.0.3.</span> <span class="nav-text">3、精确率(Precision)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、召回率-Recall"><span class="nav-number">1.0.4.</span> <span class="nav-text">4、召回率(Recall)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5、F1值（F1）"><span class="nav-number">1.0.5.</span> <span class="nav-text">5、F1值（F1）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6、TPR"><span class="nav-number">1.0.6.</span> <span class="nav-text">6、TPR</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7、FPR"><span class="nav-number">1.1.</span> <span class="nav-text">7、FPR</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8、ROC曲线"><span class="nav-number">1.2.</span> <span class="nav-text">8、ROC曲线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9、AUC"><span class="nav-number">1.3.</span> <span class="nav-text">9、AUC</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">dylan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
